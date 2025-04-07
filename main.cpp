@@ -132,6 +132,85 @@ vector<int> generateRandomArray(int k, int n)
     return a;
 }
 
+void countingSort(vector<int> &v, int k)
+{
+    int n = int(v.size());
+    vector<int> output(n);
+    vector<int> count(k + 1, 0);
+    for (int i = 0; i < n; i++)
+    {
+        count[v[i]]++;
+    }
+    for (int r = 1; r <= k; r++)
+    {
+        count[r] += count[r - 1];
+    }
+    for (int i = n - 1; i >= 0; i--)
+    {
+        output[--count[v[i]]] = v[i];
+    }
+    for (int i = 0; i < n; i++)
+    {
+        v[i] = output[i];
+    }
+}
+
+void shakerSort(vector<int> &v)
+{
+    int l = 0;
+    int r = v.size() - 1;
+    while (r > l)
+    {
+        for (int i = l; i < r; i++)
+        {
+            if (v[i] > v[i + 1])
+            {
+                swap(v[i], v[i + 1]);
+            }
+        }
+        r--;
+        for (int i = r; i > l; i--)
+        {
+            if (v[i] < v[i - 1])
+            {
+                swap(v[i], v[i - 1]);
+            }
+        }
+        l++;
+    }
+}
+
+void selectionSort(vector<int> &v)
+{
+    for (int i = 0; i < v.size(); i++)
+    {
+        int min = i;
+        for (int j = i + 1; j < v.size(); j++)
+        {
+            if (v[min] > v[j])
+            {
+                min = j;
+            }
+        }
+        swap(v[i], v[min]);
+    }
+}
+
+vector<int> generateReverseSortedArray(int n, int k)
+{
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++)
+    {
+        arr[i] = 0 + rand() % (k + 1);
+    }
+    selectionSort(arr);
+    for (int i = 0; i < n / 2; i++)
+    {
+        swap(arr[i], arr[n - 1 - i]);
+    }
+    return arr;
+}
+
 int main()
 {
     srand(time(NULL));
