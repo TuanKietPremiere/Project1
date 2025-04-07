@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <cstdlib>
 #include <ctime>
+#include <math.h>
 using namespace std;
 
 void merge(vector<int> &a, vector<int> aux, int l, int m, int r)
@@ -122,12 +124,80 @@ void heapSort(vector<int> &a)
     }
 }
 
+void naturalMergeSort(vector<int>& a){
+    int n = a.size();
+    vector <int> starts(n + 1);
+    starts[0] = 0;
+    int runCount = 0;
+    for(int i = 1; i <= n; i++){
+        if(i == n || a[i] < a[i - 1])
+            starts[++runCount] = i;
+    }
+
+    vector <int> aux(n);
+    while(runCount > 1){
+        int newRunCount = 0;
+        for(int i = 0; i < runCount - 1; i += 2){
+            merge(a, aux, starts[i], starts[i + 1] - 1, starts[i + 2] - 1);
+            starts[newRunCount++] = starts[i];
+        }
+
+        if(runCount % 2 == 1){
+            starts[newRunCount++] = starts[runCount - 1];
+        }
+
+        starts[newRunCount] = n;
+        runCount = newRunCount;
+    }
+}
+
+void insertionSort(vector<int>& a){
+    int n = a.size();
+    for(int i = 1; i < n; i++){
+        int v = a[i], j;
+        for(j = i; j > 0 && v < a[j - 1]; j--)
+            a[j] = a[j - 1];
+        a[j] = v;
+    }
+}
+
+void radixSort(vector<int>& a){
+    int n = a.size();
+    vector <int> aux(n);
+
+    int iMax = 0;
+    for(int i = 1; i < n; i++){
+        if(a[i] > a[iMax]){
+            iMax = i;
+        }
+    }
+    int maxBit = (a[iMax] == 0) ? -1 : log2(a[iMax]);
+    
+    for(int i = 0; i <= maxBit; i++){
+        int id = 0;
+        int mask = 1 << i;
+        for(int j = 0; j < n; j++)
+            if(!(a[j] & mask)) aux[id++] = a[j];
+        for(int j = 0; j < n; j++)
+            if(a[j] & mask) aux[id++] = a[j];
+        a = aux;
+    }
+}
+
+vector<int> generateRandomSortedArray(const vector<int>& rdArr){
+    int n = rdArr.size();
+    vector <int> rdsArr(n);
+    rdsArr = rdArr;
+    mergeSort(rdsArr);
+    return rdsArr;
+}
+
 vector<int> generateRandomArray(int k, int n)
 {
     vector<int> a(n);
     for (int i = 0; i < n; i++)
     {
-        a[i] = rand() % k + 1;
+        a[i] = rand() % (k + 1);
     }
     return a;
 }
@@ -138,7 +208,7 @@ int main()
     int n, k;
     cout << "Enter the number of elements (n): ";
     cin >> n;
-    cout << "Enter the maximum value (k):";
+    cout << "Enter the maximum value (k): ";
     cin >> k;
 
     vector<int> a = generateRandomArray(k, n);
@@ -147,9 +217,12 @@ int main()
         cout << x << " ";
     }
     cout << endl;
-    heapSort(a);
+
+    radixSort(a);
     for (auto x : a)
     {
         cout << x << " ";
     }
+
+    return 0;
 }
