@@ -4,8 +4,9 @@
 #include <ctime>
 #include <cmath>
 #include <random>
+#include <chrono>
 using namespace std;
-
+using namespace chrono;
 void merge(vector<int> &a, vector<int> aux, int l, int m, int r)
 {
     int i = l, j = m + 1, k = l;
@@ -198,25 +199,6 @@ void radixSort(vector<int> &a)
     }
 }
 
-vector<int> generateRandomSortedArray(const vector<int> &rdArr)
-{
-    int n = rdArr.size();
-    vector<int> rdsArr(n);
-    rdsArr = rdArr;
-    mergeSort(rdsArr);
-    return rdsArr;
-}
-
-vector<int> generateRandomArray(int k, int n)
-{
-    vector<int> a(n);
-    for (int i = 0; i < n; i++)
-    {
-        a[i] = rand() % (k + 1);
-    }
-    return a;
-}
-
 void countingSort(vector<int> &v, int k)
 {
     int n = int(v.size());
@@ -281,22 +263,7 @@ void selectionSort(vector<int> &v)
     }
 }
 
-vector<int> generateReverseSortedArray(int n, int k)
-{
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++)
-    {
-        arr[i] = 0 + rand() % (k + 1);
-    }
-    selectionSort(arr);
-    for (int i = 0; i < n / 2; i++)
-    {
-        swap(arr[i], arr[n - 1 - i]);
-    }
-    return arr;
-}
-
-void shellSort(vector<int> v)
+void shellSort(vector<int> &v)
 {
     int n = v.size();
 
@@ -319,7 +286,7 @@ void shellSort(vector<int> v)
     }
 }
 
-void bubbleSort(vector<int> v)
+void bubbleSort(vector<int> &v)
 {
     int n = v.size();
     for (int i = 0; i < n - 1; ++i)
@@ -361,7 +328,7 @@ void quickSort(vector<int> &v, int low, int high)
     }
 }
 
-vector<int> randomSorted(const vector<int> &v)
+vector<int> randomNearlySorted(const vector<int> &v)
 {
     vector<int> result = v; // Sao chep vector goc
 
@@ -382,27 +349,61 @@ vector<int> randomSorted(const vector<int> &v)
     return result;
 }
 
+vector<int> generateRandomSortedArray(const vector<int> &rdArr)
+{
+    int n = rdArr.size();
+    vector<int> rdsArr(n);
+    rdsArr = rdArr;
+    mergeSort(rdsArr);
+    return rdsArr;
+}
+
+vector<int> generateRandomArray(int k, int n)
+{
+    vector<int> a(n);
+    for (int i = 0; i < n; i++)
+    {
+        a[i] = rand() % (k + 1);
+    }
+    return a;
+}
+
+vector<int> generateReverseSortedArray(const vector<int> &a)
+{
+    vector<int> arr = a;
+    selectionSort(arr);
+    for (int i = 0; i < arr.size() / 2; i++)
+    {
+        swap(arr[i], arr[arr.size() - 1 - i]);
+    }
+    return arr;
+}
+
+template <typename Func, typename... Args>
+double measureExecutionTime(Func func, Args &&...args)
+{
+    auto start = high_resolution_clock::now();
+    func(forward<Args>(args)...);
+    auto end = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(end - start);
+    return duration.count() / 1000.0;
+}
+
 int main()
 {
     srand(time(NULL));
-    int n, k;
-    cout << "Enter the number of elements (n): ";
-    cin >> n;
-    cout << "Enter the maximum value (k): ";
-    cin >> k;
-
-    vector<int> a = generateRandomArray(k, n);
-    for (auto x : a)
+    int n, k = 2e9;
+    vector<double> size = {1e4, 2e4, 4e4, 6e4, 8e4, 10e4, 12e4, 14e4, 16e4, 20e4};
+    for (int i = 0; i < 10; i++)
     {
-        cout << x << " ";
-    }
-    cout << endl;
+        n = size[i];
+        vector<int> random = generateRandomArray(k, n);
+        vector<int> sorted = generateRandomSortedArray(random);
+        vector<int> nearlySorted = randomNearlySorted(random);
+        vector<int> reverse = generateReverseSortedArray(random);
 
-    radixSort(a);
-    for (auto x : a)
-    {
-        cout << x << " ";
+        selectionSort(random);
+        insertionSort(random);
     }
-
     return 0;
 }
