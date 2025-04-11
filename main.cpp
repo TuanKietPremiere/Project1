@@ -5,8 +5,10 @@
 #include <cmath>
 #include <random>
 #include <chrono>
+#include <algorithm>
 using namespace std;
 using namespace chrono;
+
 void merge(vector<int> &a, vector<int> aux, int l, int m, int r)
 {
     int i = l, j = m + 1, k = l;
@@ -70,7 +72,7 @@ int binarySearch(vector<int> a, int low, int high, int target)
     return low;
 }
 
-void insertionBinarySort(vector<int> &a, int low, int high)
+void binaryInsertionSort(vector<int> &a, int low, int high)
 {
     for (int i = low + 1; i <= high; i++)
     {
@@ -86,10 +88,10 @@ void insertionBinarySort(vector<int> &a, int low, int high)
     }
 }
 
-void insertionBinarySort(vector<int> &a)
+void binaryInsertionSort(vector<int> &a)
 {
     int n = a.size();
-    insertionBinarySort(a, 0, n - 1);
+    binaryInsertionSort(a, 0, n - 1);
 }
 
 void heapify(vector<int> &a, int i, int n)
@@ -328,6 +330,15 @@ void quickSort(vector<int> &v, int low, int high)
     }
 }
 
+void quickSort(vector<int> &v){
+    int n = v.size();
+    quickSort(v, 0, n - 1);
+}
+
+void stdSort(vector <int> &v){
+    sort(v.begin(), v.end());
+}
+
 vector<int> randomNearlySorted(const vector<int> &v)
 {
     vector<int> result = v; // Sao chep vector goc
@@ -380,30 +391,65 @@ vector<int> generateReverseSortedArray(const vector<int> &a)
 }
 
 template <typename Func, typename... Args>
-double measureExecutionTime(Func func, Args &&...args)
+double measureExecutionTime(Func func, Args...args)
 {
     auto start = high_resolution_clock::now();
-    func(forward<Args>(args)...);
+    func(args...);
     auto end = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(end - start);
     return duration.count() / 1000.0;
 }
 
+using sortFunc = void(*)(vector<int>&);
+
+sortFunc sortFunc1[] = {
+    selectionSort,
+    insertionSort,
+    binaryInsertionSort,
+    bubbleSort,
+    shakerSort,
+    shellSort
+};
+string sortName1[] = {"Selection sort", "Insertion sort", "Binary insertion sort", "Bubble sort", "Shaker sort", "Shell sort"};
+
+sortFunc sortFunc2[] = {
+    heapSort,
+    mergeSort,
+    naturalMergeSort,
+    quickSort,
+    stdSort
+};
+string sortName2[] = {"Heap sort", "Merge sort", "Natural merge sort", "Quick sort", "std::sort"};
+
+sortFunc sortFunc3[] = {
+    radixSort,
+    countingSort
+};
+string sortName3[] = {"Radix sort", "Counting sort"};
+
 int main()
 {
     srand(time(NULL));
-    int n, k = 2e9;
-    vector<double> size = {1e4, 2e4, 4e4, 6e4, 8e4, 10e4, 12e4, 14e4, 16e4, 20e4};
-    for (int i = 0; i < 10; i++)
-    {
-        n = size[i];
-        vector<int> random = generateRandomArray(k, n);
-        vector<int> sorted = generateRandomSortedArray(random);
-        vector<int> nearlySorted = randomNearlySorted(random);
-        vector<int> reverse = generateReverseSortedArray(random);
-
-        selectionSort(random);
-        insertionSort(random);
+    cout << "Chon nhom thuat toan sap xep de tien hanh danh gia: ";
+    int type; cin >> type;
+    sortFunc* sf;
+    string* sn;
+    if(type == 1){
+        sf = sortFunc1;
+        sn = sortName1;
     }
+    else if(type == 2){
+        sf = sortFunc2;
+        sn = sortName2;
+    }
+    else if(type == 3){
+        sf = sortFunc3;
+        sn = sortName3;
+    }
+    else{
+        return cout << "Khong hop le!\n", 0;
+    }
+
+    
     return 0;
 }
