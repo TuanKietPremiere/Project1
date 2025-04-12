@@ -3,19 +3,23 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <iomanip>
 #include <random>
 #include <chrono>
 #include <algorithm>
 using namespace std;
 using namespace chrono;
 
-void merge(vector<int> &a, vector<int> aux, int l, int m, int r)
+void merge(vector<int>& a, vector<int>& aux, int l, int m, int r)
 {
+    
     int i = l, j = m + 1, k = l;
-    aux = a;
+    for(int i = l; i <= r; i++){
+        aux[i] = a[i];
+    }
     while (i <= m && j <= r)
     {
-        if (aux[i] < aux[j])
+        if (aux[i] <= aux[j])
         {
             a[k++] = aux[i++];
         }
@@ -34,7 +38,7 @@ void merge(vector<int> &a, vector<int> aux, int l, int m, int r)
     }
 }
 
-void mergeSort(vector<int> &a, vector<int> aux, int l, int r)
+void mergeSort(vector<int>& a, vector<int>& aux, int l, int r)
 {
     if (l >= r)
         return;
@@ -44,7 +48,7 @@ void mergeSort(vector<int> &a, vector<int> aux, int l, int r)
     merge(a, aux, l, m, r);
 }
 
-void mergeSort(vector<int> &a)
+void mergeSort(vector<int>& a)
 {
     int n = a.size();
     vector<int> aux(n);
@@ -72,7 +76,7 @@ int binarySearch(vector<int> a, int low, int high, int target)
     return low;
 }
 
-void binaryInsertionSort(vector<int> &a, int low, int high)
+void binaryInsertionSort(vector<int>& a, int low, int high)
 {
     for (int i = low + 1; i <= high; i++)
     {
@@ -88,13 +92,13 @@ void binaryInsertionSort(vector<int> &a, int low, int high)
     }
 }
 
-void binaryInsertionSort(vector<int> &a)
+void binaryInsertionSort(vector<int>& a)
 {
     int n = a.size();
     binaryInsertionSort(a, 0, n - 1);
 }
 
-void heapify(vector<int> &a, int i, int n)
+void heapify(vector<int>& a, int i, int n)
 {
     int l = 2 * i + 1;
     int r = 2 * i + 2;
@@ -114,7 +118,7 @@ void heapify(vector<int> &a, int i, int n)
     }
 }
 
-void heapSort(vector<int> &a)
+void heapSort(vector<int>& a)
 {
     int n = a.size();
     for (int i = n / 2 - 1; i >= 0; i--)
@@ -128,7 +132,7 @@ void heapSort(vector<int> &a)
     }
 }
 
-void naturalMergeSort(vector<int> &a)
+void naturalMergeSort(vector<int>& a)
 {
     int n = a.size();
     vector<int> starts(n + 1);
@@ -160,7 +164,7 @@ void naturalMergeSort(vector<int> &a)
     }
 }
 
-void insertionSort(vector<int> &a)
+void insertionSort(vector<int>& a)
 {
     int n = a.size();
     for (int i = 1; i < n; i++)
@@ -172,7 +176,7 @@ void insertionSort(vector<int> &a)
     }
 }
 
-void radixSort(vector<int> &a)
+void radixSort(vector<int>& a)
 {
     int n = a.size();
     vector<int> aux(n);
@@ -201,7 +205,7 @@ void radixSort(vector<int> &a)
     }
 }
 
-void countingSort(vector<int> &v, int k)
+void countingSort(vector<int>& v, int k)
 {
     int n = int(v.size());
     vector<int> output(n);
@@ -224,7 +228,7 @@ void countingSort(vector<int> &v, int k)
     }
 }
 
-void shakerSort(vector<int> &v)
+void shakerSort(vector<int>& v)
 {
     int l = 0;
     int r = v.size() - 1;
@@ -248,8 +252,8 @@ void shakerSort(vector<int> &v)
         l++;
     }
 }
-
-void selectionSort(vector<int> &v)
+ 
+void selectionSort(vector<int>& v)
 {
     for (int i = 0; i < v.size(); i++)
     {
@@ -265,7 +269,7 @@ void selectionSort(vector<int> &v)
     }
 }
 
-void shellSort(vector<int> &v)
+void shellSort(vector<int>& v)
 {
     int n = v.size();
 
@@ -288,7 +292,7 @@ void shellSort(vector<int> &v)
     }
 }
 
-void bubbleSort(vector<int> &v)
+void bubbleSort(vector<int>& v)
 {
     int n = v.size();
     for (int i = 0; i < n - 1; ++i)
@@ -303,9 +307,11 @@ void bubbleSort(vector<int> &v)
     }
 }
 
-int partition(vector<int> &v, int low, int high)
+int partition(vector<int>& v, int low, int high)
 {
-    int pivot = v[high]; // lay phan tu cuoi lam pivot
+    int mid = (low + high) / 2;
+    int pivot = v[mid]; // lay phan tu cuoi lam pivot
+    swap(v[mid], v[high]);
     int i = low - 1;
     for (int j = low; j < high; j++)
     {
@@ -320,7 +326,7 @@ int partition(vector<int> &v, int low, int high)
 }
 
 // Ham quick sort de quy
-void quickSort(vector<int> &v, int low, int high)
+void quickSort(vector<int>& v, int low, int high)
 {
     if (low < high)
     {
@@ -330,16 +336,16 @@ void quickSort(vector<int> &v, int low, int high)
     }
 }
 
-void quickSort(vector<int> &v){
+void quickSort(vector<int>& v) {
     int n = v.size();
     quickSort(v, 0, n - 1);
 }
 
-void stdSort(vector <int> &v){
+void stdSort(vector <int>& v) {
     sort(v.begin(), v.end());
 }
 
-vector<int> randomNearlySorted(const vector<int> &v)
+vector<int> randomNearlySorted(const vector<int>& v)
 {
     vector<int> result = v; // Sao chep vector goc
 
@@ -360,11 +366,9 @@ vector<int> randomNearlySorted(const vector<int> &v)
     return result;
 }
 
-vector<int> generateRandomSortedArray(const vector<int> &rdArr)
+vector<int> generateRandomSortedArray(const vector<int>& rdArr)
 {
-    int n = rdArr.size();
-    vector<int> rdsArr(n);
-    rdsArr = rdArr;
+    vector<int> rdsArr = rdArr;
     mergeSort(rdsArr);
     return rdsArr;
 }
@@ -379,10 +383,9 @@ vector<int> generateRandomArray(int k, int n)
     return a;
 }
 
-vector<int> generateReverseSortedArray(const vector<int> &a)
+vector<int> generateReverseSortedArray(const vector<int>& a)
 {
     vector<int> arr = a;
-    selectionSort(arr);
     for (int i = 0; i < arr.size() / 2; i++)
     {
         swap(arr[i], arr[arr.size() - 1 - i]);
@@ -402,7 +405,7 @@ double measureExecutionTime(Func func, Args...args)
 
 using sortFunc = void(*)(vector<int>&);
 
-sortFunc sortFunc1[] = {
+vector<sortFunc> sortFunc1 = {
     selectionSort,
     insertionSort,
     binaryInsertionSort,
@@ -410,46 +413,70 @@ sortFunc sortFunc1[] = {
     shakerSort,
     shellSort
 };
-string sortName1[] = {"Selection sort", "Insertion sort", "Binary insertion sort", "Bubble sort", "Shaker sort", "Shell sort"};
+vector<string> sortName1 = { "Selection sort", "Insertion sort", "Binary insertion sort", "Bubble sort", "Shaker sort", "Shell sort" };
 
-sortFunc sortFunc2[] = {
+vector<sortFunc> sortFunc2 = {
     heapSort,
     mergeSort,
     naturalMergeSort,
     quickSort,
     stdSort
 };
-string sortName2[] = {"Heap sort", "Merge sort", "Natural merge sort", "Quick sort", "std::sort"};
+vector<string> sortName2 = { "Heap sort", "Merge sort", "Natural merge sort", "Quick sort", "std::sort" };
 
-sortFunc sortFunc3[] = {
+vector<sortFunc> sortFunc3 = {
     radixSort,
-    countingSort
+    // countingSort
 };
-string sortName3[] = {"Radix sort", "Counting sort"};
+vector<string> sortName3 = { "Radix sort", "Counting sort" };
+
+vector<int> nExp1 = {10000, 20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 200000 };
+vector<int> nExp2 = {1000000, 2000000, 4000000, 6000000, 8000000, 10000000, 12000000, 14000000, 16000000, 20000000 };
 
 int main()
 {
     srand(time(NULL));
-    cout << "Chon nhom thuat toan sap xep de tien hanh danh gia: ";
+    cout << "==========Chon thuc nghiem de tien hanh==========\n";
+    cout << "1. Tat ca cac thuat toan\n";
+    cout << "2. Thuat toan trong nhom 2, nhom 3 va Shell sort\n";
+    cout << "Moi chon: ";
     int type; cin >> type;
-    sortFunc* sf;
-    string* sn;
-    if(type == 1){
-        sf = sortFunc1;
-        sn = sortName1;
+    system("cls");
+    if (type == 1) {
+        cout << "***************************************GROUP 2***************************************\n";
+        for (int i = 0; i < nExp1.size(); i++) {
+            int n = nExp1[i], k = 2e9;
+            vector<int> rd = generateRandomArray(k, n);
+            vector<int> rds = generateRandomSortedArray(rd);
+            vector<int> rdr = generateReverseSortedArray(rds);
+            vector<int> rdn = randomNearlySorted(rds);
+            cout << "-------------------------------------------------------------------------------------\n";
+            cout << "Input size: " << n << endl;
+            cout << left << setw(30) << "Thuat toan" << setw(15) << "RD" << setw(15) << "RDSort" << setw(15) << "RDReverse" << setw(15) << "RDNearly" << endl;
+
+            for (int j = 0; j < sortFunc2.size(); j++) {
+                sortFunc sf = sortFunc2[j];
+                cout << setw(30) << sortName2[j];
+
+                double time;
+
+                time = measureExecutionTime(sf, rd);
+                cout << setw(15) << time;
+
+                time = measureExecutionTime(sf, rds);
+                cout << setw(15) << time;
+
+                time = measureExecutionTime(sf, rdr);
+                cout << setw(15) << time;
+
+                time = measureExecutionTime(sf, rdn);
+                cout << setw(15) << time << endl;
+            }
+        }
     }
-    else if(type == 2){
-        sf = sortFunc2;
-        sn = sortName2;
-    }
-    else if(type == 3){
-        sf = sortFunc3;
-        sn = sortName3;
-    }
-    else{
-        return cout << "Khong hop le!\n", 0;
+    else if (type == 2) {
+        return cout << "Nhap khong hop le!\n", 0;
     }
 
-    
     return 0;
 }
