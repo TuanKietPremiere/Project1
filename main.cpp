@@ -7,6 +7,8 @@
 #include <random>
 #include <chrono>
 #include <algorithm>
+#define MAX_VALUE 2000000000
+#define NUMBER_OF_FUNCTIONS 12
 using namespace std;
 using namespace chrono;
 
@@ -205,6 +207,16 @@ void radixSort(vector<int>& a)
     }
 }
 
+int maxValue(const vector<int>& v){
+    int iMax = 0;
+    for(int i = 1; i < v.size(); i++){
+        if(v[iMax] < v[i]){
+            iMax = i;
+        }
+    }
+    return v[iMax];
+}
+
 void countingSort(vector<int>& v, int k)
 {
     int n = int(v.size());
@@ -345,7 +357,7 @@ void stdSort(vector <int>& v) {
     sort(v.begin(), v.end());
 }
 
-vector<int> randomNearlySorted(const vector<int>& v)
+vector<int> generateRandomNearlySorted(const vector<int>& v)
 {
     vector<int> result = v; // Sao chep vector goc
 
@@ -375,10 +387,13 @@ vector<int> generateRandomSortedArray(const vector<int>& rdArr)
 
 vector<int> generateRandomArray(int k, int n)
 {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(0, k);
     vector<int> a(n);
     for (int i = 0; i < n; i++)
     {
-        a[i] = rand() % (k + 1);
+        a[i] = dis(gen);
     }
     return a;
 }
@@ -405,78 +420,91 @@ double measureExecutionTime(Func func, Args...args)
 
 using sortFunc = void(*)(vector<int>&);
 
-vector<sortFunc> sortFunc1 = {
+vector<sortFunc> sortFunction = {
     selectionSort,
     insertionSort,
     binaryInsertionSort,
     bubbleSort,
     shakerSort,
-    shellSort
-};
-vector<string> sortName1 = { "Selection sort", "Insertion sort", "Binary insertion sort", "Bubble sort", "Shaker sort", "Shell sort" };
-
-vector<sortFunc> sortFunc2 = {
+    shellSort,
     heapSort,
     mergeSort,
     naturalMergeSort,
     quickSort,
-    stdSort
-};
-vector<string> sortName2 = { "Heap sort", "Merge sort", "Natural merge sort", "Quick sort", "std::sort" };
-
-vector<sortFunc> sortFunc3 = {
+    stdSort,
     radixSort,
-    // countingSort
 };
-vector<string> sortName3 = { "Radix sort", "Counting sort" };
+vector<string> sortName = { "Selection sort", "Insertion sort", "Binary insertion sort", "Bubble sort", "Shaker sort", "Shell sort", "Heap sort", "Merge sort", "Natural merge sort", "Quick sort", "std::sort", "Radix sort" };
 
 vector<int> nExp1 = {10000, 20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 200000 };
 vector<int> nExp2 = {1000000, 2000000, 4000000, 6000000, 8000000, 10000000, 12000000, 14000000, 16000000, 20000000 };
 
 int main()
 {
-    srand(time(NULL));
-    cout << "==========Chon thuc nghiem de tien hanh==========\n";
-    cout << "1. Tat ca cac thuat toan\n";
-    cout << "2. Thuat toan trong nhom 2, nhom 3 va Shell sort\n";
+    cout << "         BAI TAP LON 01: DANH GIA CAC THUAT TOAN SAP XEP VA UNG DUNG         \n";
+    cout << "========================Chon thuc nghiem de tien hanh========================\n";
+    cout << "1. Tat ca cac thuat toan (input size: [10^4, 20*10^4])\n";
+    cout << "2. Thuat toan trong nhom 2, nhom 3 va Shell sort (input size: [10^6, 20*10^6])\n";
     cout << "Moi chon: ";
     int type; cin >> type;
     system("cls");
-    if (type == 1) {
-        cout << "***************************************GROUP 2***************************************\n";
-        for (int i = 0; i < nExp1.size(); i++) {
-            int n = nExp1[i], k = 2e9;
-            vector<int> rd = generateRandomArray(k, n);
-            vector<int> rds = generateRandomSortedArray(rd);
-            vector<int> rdr = generateReverseSortedArray(rds);
-            vector<int> rdn = randomNearlySorted(rds);
-            cout << "-------------------------------------------------------------------------------------\n";
-            cout << "Input size: " << n << endl;
-            cout << left << setw(30) << "Thuat toan" << setw(15) << "RD" << setw(15) << "RDSort" << setw(15) << "RDReverse" << setw(15) << "RDNearly" << endl;
+    vector <int> nArr;
+    int start, end = NUMBER_OF_FUNCTIONS; // Chi so bat dau va ket thuc cua sortFunction
+    if(type == 1){
+        nArr = nExp1;
+        start = 0;
+    }
+    else if(type == 2){
+        nArr = nExp2;
+        start = 5;
+    }
+    else{
+        return cout << "Chon khong hop le!\n", 0;
+    }
 
-            for (int j = 0; j < sortFunc2.size(); j++) {
-                sortFunc sf = sortFunc2[j];
-                cout << setw(30) << sortName2[j];
+    for (int i = 0; i < nArr.size(); i++)
+    {
+        int n = nArr[i], k = MAX_VALUE;
+        vector<int> rd = generateRandomArray(k, n);
+        vector<int> rds = generateRandomSortedArray(rd);
+        vector<int> rdr = generateReverseSortedArray(rds);
+        vector<int> rdn = generateRandomNearlySorted(rds);
+        cout << "Input size: " << n << endl;
+        cout << left << setw(30) << "Thuat toan" << setw(15) << "RD" << setw(15) << "RDSort" << setw(15) << "RDReverse" << setw(15) << "RDNearly" << endl;
+        double time;
+        for (int j = start; j < end; j++)
+        {
+            sortFunc sf = sortFunction[j];
+            cout << setw(30) << sortName[j];
 
-                double time;
+            time = measureExecutionTime(sf, rd);
+            cout << setw(15) << time;
 
-                time = measureExecutionTime(sf, rd);
-                cout << setw(15) << time;
+            time = measureExecutionTime(sf, rds);
+            cout << setw(15) << time;
 
-                time = measureExecutionTime(sf, rds);
-                cout << setw(15) << time;
+            time = measureExecutionTime(sf, rdr);
+            cout << setw(15) << time;
 
-                time = measureExecutionTime(sf, rdr);
-                cout << setw(15) << time;
-
-                time = measureExecutionTime(sf, rdn);
-                cout << setw(15) << time << endl;
-            }
+            time = measureExecutionTime(sf, rdn);
+            cout << setw(15) << time << endl;
         }
-    }
-    else if (type == 2) {
-        return cout << "Nhap khong hop le!\n", 0;
-    }
+        
+        // Chuan bi cho counting sort
+        cout << setw(30) << "Counting sort";
+        int kMax = maxValue(rd);
+        time = measureExecutionTime(countingSort, rd, kMax);
+        cout << setw(15) << time;
 
+        time = measureExecutionTime(countingSort, rds, kMax);
+        cout << setw(15) << time;
+
+        time = measureExecutionTime(countingSort, rdr, kMax);
+        cout << setw(15) << time;
+
+        time = measureExecutionTime(countingSort, rdn, kMax);
+        cout << setw(15) << time  << endl;
+        cout << "-------------------------------------------------------------------------------------\n";
+    }
     return 0;
 }
