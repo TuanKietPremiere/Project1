@@ -450,15 +450,15 @@ int main()
     system("cls");
     vector <int> nArr;
     int start, end = NUMBER_OF_FUNCTIONS; // Chi so bat dau va ket thuc cua sortFunction
-    if(type == 1){
+    if (type == 1) {
         nArr = nExp1;
         start = 0;
     }
-    else if(type == 2){
+    else if (type == 2) {
         nArr = nExp2;
         start = 5;
     }
-    else{
+    else {
         return cout << "Chon khong hop le!\n", 0;
     }
 
@@ -478,32 +478,32 @@ int main()
             cout << setw(30) << sortName[j];
 
             time = measureExecutionTime(sf, rd);
-            cout << setw(15) << time;
+            cout << setw(15) << fixed << setprecision(2) << time;
 
             time = measureExecutionTime(sf, rds);
-            cout << setw(15) << time;
+            cout << setw(15) << fixed << setprecision(2) << time;
 
             time = measureExecutionTime(sf, rdr);
-            cout << setw(15) << time;
+            cout << setw(15) << fixed << setprecision(2) << time;
 
             time = measureExecutionTime(sf, rdn);
-            cout << setw(15) << time << endl;
+            cout << setw(15) << fixed << setprecision(2) << time << endl;
         }
-        
+
         // Chuan bi cho counting sort
         cout << setw(30) << "Counting sort";
         int kMax = maxValue(rd);
         time = measureExecutionTime(countingSort, rd, kMax);
-        cout << setw(15) << time;
+        cout << setw(15) << fixed << setprecision(2) << time;
 
         time = measureExecutionTime(countingSort, rds, kMax);
-        cout << setw(15) << time;
+        cout << setw(15) << fixed << setprecision(2) << time;
 
         time = measureExecutionTime(countingSort, rdr, kMax);
-        cout << setw(15) << time;
+        cout << setw(15) << fixed << setprecision(2) << time;
 
         time = measureExecutionTime(countingSort, rdn, kMax);
-        cout << setw(15) << time  << endl;
+        cout << setw(15) << fixed << setprecision(2) << time << endl;
         cout << "-------------------------------------------------------------------------------------\n";
     }
     return 0;
